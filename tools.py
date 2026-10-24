@@ -23,7 +23,7 @@ while True:
         print("Agent:Bye!")
         break
     if tool_name not in toolbox:
-        print("Agent: I dont have a tool" + tool_name)
+        print("Agent: I dont have a tool called " + tool_name)
         continue
 
     chosen_tool = toolbox[tool_name]
