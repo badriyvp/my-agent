@@ -1,3 +1,4 @@
+import requests 
 def add(a,b):
     return a+b 
 def divide(a,b):
@@ -6,10 +7,32 @@ def greet(name):
     return "Hello, "+ name 
 def multiply(a,b):
     return a*b
+cities ={
+    "troy":[42.61,-83.15],
+    "detroit":[42.33,-83.05],
+    "hyderabad":[17.38,78.48]
+}
+def get_weather(city):
+    city=city.lower()
+    if city not in cities:
+        return "I don't know the city"+ city
+    lat= cities[city][0]
+    lon = cities[city][1]
+    url = ("https://api.open-meteo.com/v1/forecast?latitude=" + str(lat)
+           + "&longitude=" + str(lon)
+           + "&current=temperature_2m&temperature_unit=fahrenheit")
+    response=requests.get(url)
+    if response.status_code != 200:
+        return "weather API error:"+ str(response.status_code)
+    data = response.json()
+    temp = data["current"]["temperature_2m"]
+    unit=data["current_units"]["temperature_2m"]
+    return str(temp)+ unit
 toolbox={"add":add,
          "divide": divide,
          "greet":greet,
-         "multiply":multiply}
+         "multiply":multiply,
+         "weather": get_weather}
 while True:
     command = input("you: ")
     parts = command.split()
@@ -29,7 +52,7 @@ while True:
     chosen_tool = toolbox[tool_name]
 
     try:
-        if tool_name == "greet":
+        if tool_name == "greet" or tool_name== "weather":
             result= chosen_tool(parts[1])
         else:
             a= float(parts[1])
